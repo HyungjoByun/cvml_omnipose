@@ -310,20 +310,15 @@ def main(omni_CLI=False):
                                                  nclasses=args.nclasses, dim=args.dim, omni=args.omni,
                                                  net_avg=False)
             else:
-                if args.chan > 0 :
-                    model = models.Cellpose(gpu=gpu, device=device, model_type='cyto2_omni', 
-                                            torch=True, omni=args.omni, 
+                nchan = 2
+                if args.all_channels:
+                    channels = None
+                    nchan = 3
+                model = models.CellposeModel(gpu=gpu, device=device, 
+                                            pretrained_model=cpmodel_path,
+                                            torch=True,
+                                            nclasses=args.nclasses, dim=args.dim, omni=args.omni,nchan=nchan,
                                             net_avg=False)
-                else:
-                    nchan = 2
-                    if args.all_channels:
-                        channels = None
-                        nchan = 3
-                    model = models.CellposeModel(gpu=gpu, device=device, 
-                                                pretrained_model=cpmodel_path,
-                                                torch=True,
-                                                nclasses=args.nclasses, dim=args.dim, omni=args.omni,nchan=nchan,
-                                                net_avg=False)
             
 
             # handle diameters
