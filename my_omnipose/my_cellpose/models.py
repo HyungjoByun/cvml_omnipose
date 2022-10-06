@@ -1,4 +1,5 @@
 import os, sys, time, shutil, tempfile, datetime, pathlib, subprocess
+from pprint import PrettyPrinter
 from pathlib import Path
 import numpy as np
 from tqdm import trange, tqdm
@@ -104,8 +105,9 @@ class Cellpose():
         if self.omni:
             net_avg = False
         model_range = range(4) if net_avg else range(1)
-        self.pretrained_model = [model_path(model_type, j, torch) for j in model_range]
         
+        self.pretrained_model = [model_path(model_type, j, torch) for j in model_range]
+
         self.diam_mean = 30. #default for any cyto model 
         nuclear = 'nuclei' in model_type
         bacterial = ('bact' in model_type) or ('worm' in model_type) 
@@ -118,7 +120,7 @@ class Cellpose():
         
         if not net_avg:
             self.pretrained_model = self.pretrained_model[0]
-
+    
         self.cp = CellposeModel(device=self.device, gpu=self.gpu,
                                 pretrained_model=self.pretrained_model,
                                 diam_mean=self.diam_mean, torch=self.torch, 

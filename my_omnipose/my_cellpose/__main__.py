@@ -298,7 +298,7 @@ def main(omni_CLI=False):
                     if args.pretrained_model in OMNI_MODELS:
                         logger.warning('omnipose models not available in mxnet, using pytorch')
                         args.mxnet = False
-                if not bacterial:                
+                if not bacterial:              
                     model = models.Cellpose(gpu=gpu, device=device, model_type=args.pretrained_model, 
                                             torch=(not args.mxnet), omni=args.omni, 
                                             net_avg=(not args.fast_mode and not args.no_net_avg))
@@ -431,6 +431,7 @@ def main(omni_CLI=False):
                     szmean = args.diameter 
             else:
                 rescale = True
+                if args.pretrained_model == 'bact_phase_omni': rescale = False
                 args.diameter = szmean 
                 logger.info('pretrained model %s is being used'%cpmodel_path)
                 args.residual_on = 1
@@ -476,7 +477,7 @@ def main(omni_CLI=False):
                                            learning_rate=args.learning_rate, channels=channels,
                                            save_path=os.path.realpath(args.dir), save_every=args.save_every,
                                            save_each=args.save_each,
-                                           rescale=False,n_epochs=args.n_epochs,
+                                           rescale=rescale,n_epochs=args.n_epochs,
                                            batch_size=args.batch_size, 
                                            min_train_masks=args.min_train_masks,
                                            SGD=(not args.RAdam),
