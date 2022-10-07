@@ -465,7 +465,7 @@ def save_masks(images, masks, flows, file_names, png=True, tif=False,
             io_logger.warning('found more than 65535 masks in each image, cannot save PNG, saving as TIF')
     
     if tif:
-        exts.append('.tif')
+        exts.append('.tiff')
 
     # format_labels will also automatically use lowest bit depth possible
     if OMNI_INSTALLED:
@@ -476,7 +476,7 @@ def save_masks(images, masks, flows, file_names, png=True, tif=False,
         warnings.simplefilter("ignore")
         for ext in exts:
             
-            imsave(os.path.join(maskdir,basename + '_cp_masks' + suffix + ext), masks)
+            imsave(os.path.join(maskdir,basename.replace("_img","_label")+ ext), masks)
     
     criterion3 = not (min(images.shape) > 3 and images.ndim >=3)
     
