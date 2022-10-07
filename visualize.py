@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import tifffile as tif
 import os
 
-dir_path = "/home/DataSet/Omnipose_test_rgb/masks/"
+dir_path = "./outputs/"
 
 if not os.path.isdir("results"):
     os.mkdir("results")
