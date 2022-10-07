@@ -82,7 +82,7 @@ def main(omni_CLI=False):
     model_args.add_argument('--unet', required=False, default=0, type=int, help='run standard unet instead of cellpose flow output')
     model_args.add_argument('--nclasses',default=3, type=int, help='if running unet, choose 2 or 3; if training omni, choose 4; standard Cellpose uses 3')
     model_args.add_argument('--kernel_size',default=2, type=int, help='kernel size for maskpool. Starts at 2, higher means more aggressive downsampling.')
-
+    model_args.add_argument('--pretrained_size', action='store_true', help='apply pretrained size estimation model')
 
     # algorithm settings
     algorithm_args = parser.add_argument_group("algorithm arguments")
@@ -312,8 +312,10 @@ def main(omni_CLI=False):
             else:
                 if args.chan > 0:
                     logger.info('Custom Model based on Cyto')
+                    size_path = cpmodel_path + "_size.npy" if args.pretrained_size else None
                     model = models.Cellpose(gpu=gpu, device=device, model_type="cyto2_omni", 
                                             pretrained_model= cpmodel_path,
+                                            pretrained_size = size_path,
                                             torch=(not args.mxnet), omni=args.omni,
                                             net_avg=(not args.fast_mode and not args.no_net_avg))
                 else:
@@ -477,7 +479,7 @@ def main(omni_CLI=False):
             
             # allow multiple GPUs, maybe wrap in test to see if there are multiple GPUs
             # model = nn.DataParallel(model)
-            
+
             # train segmentation model
             if args.train:
                 cpmodel_path = model.train(images, labels, train_files=image_names,
@@ -495,6 +497,9 @@ def main(omni_CLI=False):
 
             # train size model
             if args.train_size:
+                output = io.load_train_test_data(args.dir, test_dir, img_filter, args.mask_filter, args.unet, args.look_one_level_down, args.omni)
+                images, labels, image_names, test_images, test_labels, image_names_test = output
+                
                 sz_model = models.SizeModel(cp_model=model, device=device)
                 sz_model.train(images, labels, test_images, test_labels, channels=channels, batch_size=args.batch_size)
                 if test_images is not None:

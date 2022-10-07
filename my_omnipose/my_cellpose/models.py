@@ -78,7 +78,7 @@ class Cellpose():
         run model using torch if available
 
     """
-    def __init__(self, gpu=False, model_type='cyto', pretrained_model=None, net_avg=True, device=None, 
+    def __init__(self, gpu=False, model_type='cyto', pretrained_model=None, pretrained_size=None, net_avg=True, device=None, 
                  torch=True, model_dir=None, dim=2, omni=None):
         super(Cellpose, self).__init__()
         if not torch:
@@ -132,7 +132,10 @@ class Cellpose():
         
         # size model not used for bacterial model
         if not bacterial:
-            self.pretrained_size = size_model_path(model_type, torch)
+            if pretrained_size == None:
+                self.pretrained_size = size_model_path(model_type, torch)
+            else:
+                self.pretrained_size = pretrained_size
             self.sz = SizeModel(device=self.device, pretrained_size=self.pretrained_size,
                                 cp_model=self.cp)
             self.sz.model_type = model_type
@@ -1284,8 +1287,7 @@ class SizeModel():
                 styles[inds+nimg*iepoch] = feat
                 diams[inds+nimg*iepoch] = np.log(diam_train[inds]) - np.log(self.diam_mean) + np.log(scale)
             del feat
-            if (iepoch+1)%2==0:
-                models_logger.info('ran %d epochs in %0.3f sec'%(iepoch+1, time.time()-tic))
+            models_logger.info('ran %d epochs in %0.3f sec'%(iepoch+1, time.time()-tic))
 
         # create model
         smean = styles.mean(axis=0)
