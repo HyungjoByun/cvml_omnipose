@@ -78,7 +78,7 @@ class Cellpose():
         run model using torch if available
 
     """
-    def __init__(self, gpu=False, model_type='cyto', net_avg=True, device=None, 
+    def __init__(self, gpu=False, model_type='cyto', pretrained_model=None, net_avg=True, device=None, 
                  torch=True, model_dir=None, dim=2, omni=None):
         super(Cellpose, self).__init__()
         if not torch:
@@ -106,7 +106,10 @@ class Cellpose():
             net_avg = False
         model_range = range(4) if net_avg else range(1)
         
-        self.pretrained_model = [model_path(model_type, j, torch) for j in model_range]
+        if pretrained_model == None:
+            self.pretrained_model = [model_path(model_type, j, torch) for j in model_range]
+        else:
+            self.pretrained_model = [pretrained_model]
 
         self.diam_mean = 30. #default for any cyto model 
         nuclear = 'nuclei' in model_type
@@ -271,7 +274,6 @@ class Cellpose():
         channels = [0,0] if channels is None else channels # why not just make this a default in the function header?
 
         estimate_size = True if (diameter is None or diameter==0) else False
-        
         if estimate_size and self.pretrained_size is not None and not do_3D and x[0].ndim < 4:
             tic = time.time()
             models_logger.info('~~~ ESTIMATING CELL DIAMETER(S) ~~~')

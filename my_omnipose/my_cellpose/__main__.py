@@ -310,15 +310,22 @@ def main(omni_CLI=False):
                                                  nclasses=args.nclasses, dim=args.dim, omni=args.omni,
                                                  net_avg=False)
             else:
-                nchan = 2
-                if args.all_channels:
-                    channels = None
-                    nchan = 3
-                model = models.CellposeModel(gpu=gpu, device=device, 
-                                            pretrained_model=cpmodel_path,
-                                            torch=True,
-                                            nclasses=args.nclasses, dim=args.dim, omni=args.omni,nchan=nchan,
-                                            net_avg=False)
+                if args.chan > 0:
+                    logger.info('Custom Model based on Cyto')
+                    model = models.Cellpose(gpu=gpu, device=device, model_type="cyto2_omni", 
+                                            pretrained_model= cpmodel_path,
+                                            torch=(not args.mxnet), omni=args.omni,
+                                            net_avg=(not args.fast_mode and not args.no_net_avg))
+                else:
+                    nchan = 2
+                    if args.all_channels:
+                        channels = None
+                        nchan = 3
+                    model = models.CellposeModel(gpu=gpu, device=device, 
+                                                pretrained_model=cpmodel_path,
+                                                torch=True,
+                                                nclasses=args.nclasses, dim=args.dim, omni=args.omni,nchan=nchan,
+                                                net_avg=False)
             
 
             # handle diameters
@@ -329,6 +336,7 @@ def main(omni_CLI=False):
                 else:
                     logger.info('using user-specified model, no auto-diameter estimation available')
                     diameter = model.diam_mean
+                    if isinstance(model,models.Cellpose): diameter = None
             else:
                 diameter = args.diameter
                 logger.info('using diameter %0.2f for all images'%diameter)
