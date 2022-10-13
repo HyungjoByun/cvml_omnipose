@@ -515,6 +515,9 @@ def reshape(data, channels=[0,0], chan_first=False, channel_axis=0):
             chanid = [channels[0]-1] # oh so [0,0] would do a mean and [1,0] would actually take the first channel?
             if channels[1] > 0:
                 chanid.append(channels[1]-1)
+            #non_chanid = [i for i in range(data.shape[-1]) if i not in chanid]
+            #non_chan_data = data[...,non_chanid].sum(axis=-1,keepdims=True)
+            #data = data[...,chanid] + non_chan_data
             data = data[...,chanid]
             for i in range(data.shape[-1]):
                 if np.ptp(data[...,i]) == 0.0:
