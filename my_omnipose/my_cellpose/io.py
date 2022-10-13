@@ -476,7 +476,7 @@ def save_masks(images, masks, flows, file_names, png=True, tif=False,
         warnings.simplefilter("ignore")
         for ext in exts:
             
-            imsave(os.path.join(maskdir,basename.replace("_img","_label")+ ext), masks)
+            imsave(os.path.join(maskdir,basename+"_label"+ ext), masks)
     
     criterion3 = not (min(images.shape) > 3 and images.ndim >=3)
     
