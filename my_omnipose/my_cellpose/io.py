@@ -99,7 +99,7 @@ def imsave(filename, arr):
 
 # now allows for any extension(s) to be specified, allowing exlcusion if necessary, non-image files, etc. 
 def get_image_files(folder, mask_filter='_masks', img_filter=None, look_one_level_down=False,
-                    extensions = ['png','jpg','jpeg','tif','tiff']):
+                    extensions = ['png','jpg','jpeg','tif','tiff','bmp']):
     """ find all images in a folder and if look_one_level_down all subfolders """
     mask_filters = ['_cp_masks', '_cp_output', '_flows', mask_filter]
     image_names = []
