@@ -505,6 +505,7 @@ def reshape(data, channels=[0,0], chan_first=False, channel_axis=0):
     # use grayscale image
     if data.shape[-1]==1:
         data = np.concatenate((data, np.zeros_like(data)), axis=-1)
+        #data = np.concatenate((data, data), axis=-1)
     else:
         if channels[0]==0:
             data = data.mean(axis=-1, keepdims=True) # why do this? Seems like it would be smashing channels together instead of taking the 0th one. 
@@ -517,7 +518,7 @@ def reshape(data, channels=[0,0], chan_first=False, channel_axis=0):
                 chanid.append(channels[1]-1)
             #non_chanid = [i for i in range(data.shape[-1]) if i not in chanid]
             #non_chan_data = data[...,non_chanid].sum(axis=-1,keepdims=True)
-            #data = data[...,chanid] + non_chan_data
+            #data = (data[...,chanid] + non_chan_data)/(len(non_chanid)+1)
             data = data[...,chanid]
             for i in range(data.shape[-1]):
                 if np.ptp(data[...,i]) == 0.0:

@@ -495,11 +495,17 @@ def main(omni_CLI=False):
                 model.pretrained_model = cpmodel_path
                 logger.info('model trained and saved to %s'%cpmodel_path)
 
+            output = None
+            images = None
+            labels = None
+            image_names = None
+            test_images = None
+            test_labels = None
+            image_names_test = None
             # train size model
             if args.train_size:
                 output = io.load_train_test_data(args.dir, test_dir, img_filter, args.mask_filter, args.unet, args.look_one_level_down, args.omni)
                 images, labels, image_names, test_images, test_labels, image_names_test = output
-                
                 sz_model = models.SizeModel(cp_model=model, device=device)
                 sz_model.train(images, labels, test_images, test_labels, channels=channels, batch_size=args.batch_size)
                 if test_images is not None:

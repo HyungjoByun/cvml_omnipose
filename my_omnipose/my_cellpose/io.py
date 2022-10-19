@@ -249,13 +249,12 @@ def load_train_test_data(train_dir, test_dir=None, image_filter='', mask_filter=
                 labels[n] = np.concatenate((labels[n][np.newaxis,:,:], flows), axis=0) 
             else:
                 labels[n] = flows
-            
+
     # testing data
     test_images, test_labels, image_names_test = None, None, None
     if test_dir is not None:
         image_names_test = get_image_files(test_dir, mask_filter, image_filter, look_one_level_down)
         label_names_test, flow_names_test = get_label_files(image_names_test, label_filter=mask_filter, img_filter=image_filter, flows=True)
-        
         
         nimg = len(image_names_test)
         test_images = [imread(image_names_test[n]) for n in range(nimg)]
